@@ -1,0 +1,48 @@
+afrom telethon import TelegramClient, events
+import asyncio
+
+# Your group IDs
+Id_Group1 = -1001324987720
+Id_Group2 = -1001218506395
+Id_Group3 = -1001370181700
+
+# Your API credentials
+api_id = '20796854'
+api_hash = '26b5566d9211aae142762032996ca30e'
+
+# Initialize the Telethon client
+client = TelegramClient('none', api_id, api_hash)
+
+# Event handler
+@client.on(events.NewMessage)
+async def handler(event):
+    chat_id = event.chat_id
+    message_text = event.raw_text.lower()  # Convert the message to lowercase
+
+    # Check if the message has any media (images, videos, documents)
+    if not event.media:
+        # No media found, proceed with forwarding
+        if "venturefx signals ©" in message_text:  # Check for lowercase occurrence
+            modified_text = event.raw_text.replace("venturefx signals ©", "J Trading Ltd Signals ©")
+            modified_text = modified_text.replace("VENTUREFX SIGNALS ©", "J Trading Ltd Signals ©")
+
+            # Split the modified text into lines
+            lines = modified_text.split('\n')
+
+            # Add the separator line after each line
+            separator = "|||||||||||||||||||||||||||||||||||||||||||||||||||||||"
+            modified_lines = [line + '\n' + separator for line in lines]
+
+            # Join the modified lines back together
+            final_modified_text = '\n'.join(modified_lines)
+
+            await client.send_message(Id_Group2, final_modified_text)
+            await client.send_message(Id_Group3, final_modified_text)
+        elif any(date_phrase in message_text for date_phrase in ["28 aug", "29 aug", "30 aug", "31 aug", "01 sep"]):
+            await client.send_message(Id_Group2, event.raw_text)
+            await client.send_message(Id_Group3, event.raw_text)
+
+
+# Start the client and run until disconnected
+client.start()
+client.run_until_disconnected()
